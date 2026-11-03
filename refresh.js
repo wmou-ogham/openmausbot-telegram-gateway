@@ -10,7 +10,7 @@ import { setDefaultAutoSelectFamily } from "node:net";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { hostConfig, imageHostValues, loadEnvFile, renderTemplate, unitValues } from "./env.js";
+import { hostConfig, imageHostValues, loadEnvFile, renderTemplate, unitValues } from "./src/env.js";
 
 setDefaultResultOrder("ipv4first");
 setDefaultAutoSelectFamily(false);
@@ -22,7 +22,7 @@ const DATA_DIR = HOST.dataDir;
 const SERVER = HOST.serverUrl;
 const BOTS_DIR = join(DATA_DIR, "telegram-bots");
 const APPLIED_PATH = join(BOTS_DIR, "applied.json");
-const UNIT_TEMPLATE = join(HERE, "openmausbot-telegram@.service.in");
+const UNIT_TEMPLATE = join(HERE, "deploy", "openmausbot-telegram@.service.in");
 const UNIT_DEST = "/etc/systemd/system/openmausbot-telegram@.service";
 const COLUMNS = ["instance", "harness_bot", "allow_username", "state_path", "replaces", "token"];
 const INSTANCE_RE = /^[a-z][a-z0-9-]{0,30}$/;
@@ -302,8 +302,8 @@ async function installUnit(rendered) {
 
 async function syncImageHost() {
   const dests = [
-    [HOST.imageComposeDest, join(HERE, "image-host", "compose.yml.in")],
-    [HOST.imageTraefikDest, join(HERE, "image-host", "omb-img.yml.in")],
+    [HOST.imageComposeDest, join(HERE, "deploy", "image-host", "compose.yml.in")],
+    [HOST.imageTraefikDest, join(HERE, "deploy", "image-host", "omb-img.yml.in")],
   ].filter(([dest]) => dest);
   if (!dests.length) return;
   const values = imageHostValues(HOST);

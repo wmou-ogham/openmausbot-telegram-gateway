@@ -5,8 +5,8 @@
 import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
-import { listContexts, readContext, defaultContextDir } from "./context.js";
-import { capturedAtFromJpeg, gpsFromJpeg } from "./exif.js";
+import { listContexts, readContext, defaultContextDir } from "./src/context.js";
+import { capturedAtFromJpeg, gpsFromJpeg } from "./src/exif.js";
 
 const PHOTO_BYTES = 15 * 1024 * 1024;
 

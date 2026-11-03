@@ -5,6 +5,6 @@
   "description": "Unofficial Telegram gateway for OpenMausBot. One process, one token, one harness bot.",
   "scripts": {
     "refresh": "node refresh.js",
-    "test": "node --test"
+    "test": "node --test src/*.test.js refresh.test.js telegram-mcp.test.js"
   }
 }

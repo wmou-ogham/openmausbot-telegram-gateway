@@ -15,7 +15,7 @@ export function defaultPythonPath(dataDir = process.env.OMB_DATA_DIR ?? join(hom
 
 export function createTranscriber(options = {}) {
   const python = options.pythonPath ?? defaultPythonPath(options.dataDir);
-  const script = options.scriptPath ?? join(HERE, "stt", "worker.py");
+  const script = options.scriptPath ?? join(HERE, "..", "stt", "worker.py");
   const dataDir = options.dataDir ?? process.env.OMB_DATA_DIR ?? join(homedir(), ".openmausbot");
   let child = null;
   let starting = null;

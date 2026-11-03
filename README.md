@@ -20,7 +20,7 @@ cp bots.example.csv bots.csv
 | `OMB_DATA_DIR` | OpenMaus 資料目錄。空白則是 `~/.openmausbot` |
 | `OMB_SERVER_URL` | harness API。空白則是 `http://127.0.0.1:8799` |
 | `OMB_IMAGE_PUBLISH_DIR` / `OMB_IMAGE_PUBLIC_BASE` | 兩者都有才把本機圖嵌成 https。缺一則改走 `sendPhoto` |
-| `OMB_IMAGE_COMPOSE_DEST` / `OMB_IMAGE_TRAEFIK_DEST` | 有填才把 `image-host/*.in` 渲染到那兩個路徑 |
+| `OMB_IMAGE_COMPOSE_DEST` / `OMB_IMAGE_TRAEFIK_DEST` | 有填才把 `deploy/image-host/*.in` 渲染到那兩個路徑 |
 
 `bots.csv` 欄位：`instance`、`harness_bot`（名稱或 id）、`allow_username`（必填）、`state_path`、`replaces`、`token`。同一 token 或同一個 harness bot 不能出現兩次，否則 `getUpdates` 會互搶。`replaces` 用來關掉舊的單 bot unit。
 
@@ -60,12 +60,19 @@ node refresh.js
 
 stdio，一行一個 JSON。環境變數不要用 `OMB_` 開頭，那是 OpenMaus 的保留字；資料目錄不是預設位置時才設 `TELEGRAM_CONTEXT_DIR`。貼上的伺服器預設是關的，Test 看到 `get_location`、`list_photo_locations`、`read_photo_exif` 後再打開。
 
+## 目錄
+
+- `gateway.js`、`refresh.js`、`telegram-mcp.js`：三個進入點。
+- `src/`：訊息、媒體、圖床、語音的程式與測試。
+- `stt/`：本機 Whisper worker。權重不在這裡。
+- `deploy/`：systemd template，以及選擇性的圖床。
+
 ## 圖床
 
-`image-host/nginx.conf` 只回應 32 位雜湊檔名，目錄不列出檔案。`compose.yml.in` 與 `omb-img.yml.in` 是模板。`refresh.js` 在目的路徑有填、且圖床變數齊全時才寫出檔案。compose 內容有變才會 `docker compose up -d`。把 `nginx.conf` 放在 compose 檔旁邊。
+`deploy/image-host/nginx.conf` 只回應 32 位雜湊檔名，目錄不列出檔案。`compose.yml.in` 與 `omb-img.yml.in` 是模板。`refresh.js` 在目的路徑有填、且圖床變數齊全時才寫出檔案。compose 內容有變才會 `docker compose up -d`。把 `nginx.conf` 放在 compose 檔旁邊。
 
 ## 測試
 
 ```bash
-node --test
+npm test
 ```

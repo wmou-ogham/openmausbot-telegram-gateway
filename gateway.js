@@ -11,12 +11,12 @@ import { setDefaultAutoSelectFamily } from "node:net";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir, tmpdir } from "node:os";
-import { loadEnvFile } from "./env.js";
-import { defaultContextDir, updateContext } from "./context.js";
-import { gpsFromJpeg } from "./exif.js";
-import { collectOutbound, resolveSendableFile } from "./outbound.js";
-import { applyLocation } from "./place.js";
-import { lookupLink, rememberLink, replyNote, replySource } from "./reply.js";
+import { loadEnvFile } from "./src/env.js";
+import { defaultContextDir, updateContext } from "./src/context.js";
+import { gpsFromJpeg } from "./src/exif.js";
+import { collectOutbound, resolveSendableFile } from "./src/outbound.js";
+import { applyLocation } from "./src/place.js";
+import { lookupLink, rememberLink, replyNote, replySource } from "./src/reply.js";
 import {
   HTML_MAX,
   RICH_MAX,
@@ -26,9 +26,9 @@ import {
   resolveLocalPhoto,
   richPayload,
   splitOutgoingImages,
-} from "./format.js";
-import { publishLocalImage } from "./image-bed.js";
-import { createTranscriber } from "./stt.js";
+} from "./src/format.js";
+import { publishLocalImage } from "./src/image-bed.js";
+import { createTranscriber } from "./src/stt.js";
 import {
   TURN_IMAGE_MAX_COUNT,
   attachmentTag,
@@ -39,7 +39,7 @@ import {
   mediaPlan,
   mimeFromFilePath,
   unsupportedMediaReason,
-} from "./media.js";
+} from "./src/media.js";
 
 // Some hosts have no IPv6 route to api.telegram.org. Node fetch then fails the
 // whole call with ETIMEDOUT and never uses the working IPv4 address.

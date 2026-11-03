@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 
-import { updateContext } from "./context.js";
+import { updateContext } from "./src/context.js";
 import { encodeFrame, handleRpc, takeFrame } from "./telegram-mcp.js";
 
 function u16(n) {

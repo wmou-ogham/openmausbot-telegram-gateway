@@ -5,3 +5,4 @@ bots.csv
 *.env
 *.log
 node_modules/
+.notes/
