@@ -1,0 +1,7 @@
+# Do not commit. Tokens live in bots.csv and ~/.openmausbot/telegram-bots/*.env
+telegram.env
+telegram-seeker.env
+bots.csv
+*.env
+*.log
+node_modules/

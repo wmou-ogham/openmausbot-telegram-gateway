@@ -1,0 +1,10 @@
+{
+  "name": "openmausbot-telegram-gateway",
+  "private": true,
+  "type": "module",
+  "description": "Unofficial Telegram gateway for OpenMausBot. One process, one token, one harness bot.",
+  "scripts": {
+    "refresh": "node refresh.js",
+    "test": "node --test"
+  }
+}

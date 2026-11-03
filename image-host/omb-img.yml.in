@@ -1,0 +1,38 @@
+http:
+  routers:
+    omb-img-root:
+      rule: "Host(`@OMB_IMAGE_HOST@`) && Path(`@OMB_IMAGE_PREFIX@`)"
+      entryPoints:
+        - web
+      priority: 20
+      middlewares:
+        - omb-img-add-slash
+      service: omb-img-service
+
+    omb-img-router:
+      rule: "Host(`@OMB_IMAGE_HOST@`) && PathPrefix(`@OMB_IMAGE_PREFIX@/`)"
+      entryPoints:
+        - web
+      priority: 10
+      middlewares:
+        - omb-img-strip
+      service: omb-img-service
+
+  middlewares:
+    omb-img-add-slash:
+      redirectRegex:
+        regex: "^(https?://[^/]+)@OMB_IMAGE_PREFIX@$"
+        replacement: "@OMB_IMAGE_PUBLIC_BASE@/"
+        permanent: false
+
+    omb-img-strip:
+      stripPrefix:
+        prefixes:
+          - "@OMB_IMAGE_PREFIX@"
+
+  services:
+    omb-img-service:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "http://@OMB_IMAGE_CONTAINER@:80"

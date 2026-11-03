@@ -1,0 +1,8 @@
+# Copy to bots.csv (gitignored). Edit, then: node refresh.js
+# harness_bot is the OpenMausBot name or id. instance becomes openmausbot-telegram@<instance>.
+# allow_username is required. There is no default account.
+# replaces: legacy unit to disable so two processes do not share one getUpdates token.
+# Leave state_path empty to use $OMB_DATA_DIR/telegram-gateway-<instance>.json
+instance,harness_bot,allow_username,state_path,replaces,token
+alpha,Alpha,TELEGRAM_USERNAME,,,
+beta,Beta,TELEGRAM_USERNAME,,,

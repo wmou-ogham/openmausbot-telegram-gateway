@@ -1,0 +1,25 @@
+# One instance per bots.csv row. node refresh.js renders this with .env and installs it.
+# Instance env (mode 600): @OMB_DATA_DIR@/telegram-bots/%i.env
+[Unit]
+Description=OpenMausBot Telegram gateway (%i)
+After=network-online.target openmausbot.service
+Wants=network-online.target
+Requires=openmausbot.service
+
+[Service]
+Type=simple
+User=@OMB_SERVICE_USER@
+WorkingDirectory=@OMB_GATEWAY_DIR@
+Environment=HOME=@OMB_SERVICE_HOME@
+Environment=OMB_DATA_DIR=@OMB_DATA_DIR@
+Environment=OMB_SERVER_URL=@OMB_SERVER_URL@
+Environment=OMB_IMAGE_PUBLISH_DIR=@OMB_IMAGE_PUBLISH_DIR@
+Environment=OMB_IMAGE_PUBLIC_BASE=@OMB_IMAGE_PUBLIC_BASE@
+Environment=PATH=@OMB_PATH@
+EnvironmentFile=@OMB_DATA_DIR@/telegram-bots/%i.env
+ExecStart=@OMB_NODE_BIN@ @OMB_GATEWAY_DIR@/gateway.js
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

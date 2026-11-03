@@ -1,0 +1,15 @@
+services:
+  app:
+    image: nginx:alpine
+    container_name: @OMB_IMAGE_CONTAINER@
+    restart: unless-stopped
+    volumes:
+      - @OMB_IMAGE_PUBLISH_DIR@:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - @OMB_IMAGE_NETWORK@
+
+networks:
+  @OMB_IMAGE_NETWORK@:
+    external: true
+    name: @OMB_IMAGE_NETWORK@
