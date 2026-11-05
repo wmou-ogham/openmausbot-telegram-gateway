@@ -1,3 +1,4 @@
+import { statSync } from "node:fs";
 import { realpath, stat } from "node:fs/promises";
 import { basename, extname, isAbsolute, relative } from "node:path";
 import { takeLocations } from "./place.js";
@@ -36,6 +37,19 @@ function hidePartial(text) {
     .replace(/<attached-file\b[^>\n]*$/g, "");
 }
 
+/**
+ * A markdown link is a document only when the target is a regular file, or
+ * when it is not on disk yet (a missing file still warns at send time).
+ * Directories and other non-files are citations: leave them in the reply.
+ */
+function markdownLinkIsDocument(filePath) {
+  try {
+    return statSync(filePath).isFile();
+  } catch {
+    return true;
+  }
+}
+
 export function collectOutbound(text) {
   const located = takeLocations(hidePartial(text));
   const files = [];
@@ -46,8 +60,10 @@ export function collectOutbound(text) {
   cleaned = cleaned.replace(LOCAL_LINK, (full, prefix, label, target) => {
     const path = localPath(target);
     if (!path || IMAGE_EXT.has(extname(path).toLowerCase())) return full;
+    const text = String(label ?? "").trim() || path;
+    if (!markdownLinkIsDocument(path)) return `${prefix}${text}`;
     files.push({ path, name: String(label ?? "").trim() });
-    return `${prefix}${String(label ?? "").trim()}`;
+    return `${prefix}${text}`;
   });
   return {
     text: cleaned.replace(/\n{3,}/g, "\n\n").trim(),
