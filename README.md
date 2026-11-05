@@ -43,7 +43,7 @@ node refresh.js
 - 位置與即時位置只寫進 `telegram-context/<bot id>.json`。模型用 MCP `telegram` 的 `get_location` 讀。
 - 有對到的 OpenMaus 訊息會帶 `replyToId`。助理回覆會 `reply` 回該則 Telegram 訊息。
 - 照片若還留著 EXIF GPS，座標記在同一個脈絡檔。
-- 助理回覆裡的 `<attached-file>`，或指向本機檔案的 Markdown 連結，會用 `sendDocument` 送回。允許的根目錄是 `OMB_FILE_ROOTS`（冒號分隔）。空白則是資料目錄與家目錄。
+- 助理回覆裡的 `<attached-file>`，或指向本機一般檔案的 Markdown 連結，會用 `sendDocument` 送回。目錄與其他非一般檔案只留在內文，不當成附件，也不發「沒送到」警告。允許的根目錄是 `OMB_FILE_ROOTS`（冒號分隔）。空白則是資料目錄與家目錄。
 
 有些網路沒有到 `api.telegram.org` 的 IPv6 路由。`gateway.js` 會關掉 Node Happy Eyeballs 並優先 IPv4，避免 long poll 停在 `ETIMEDOUT`。
 
