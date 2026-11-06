@@ -38,6 +38,7 @@ node refresh.js
 - 同一則 OpenMausBot `assistant_text` 在 Telegram 只佔一則，串流用 `editMessageText` 原地更新。
 - 內文走 Bot API 10.1 **`sendRichMessage` / `editMessageText.rich_message`**（[Rich Message Formatting](https://core.telegram.org/bots/api#rich-message-formatting-options)）。`sendRichMessage` 失敗才退回 `parse_mode=HTML`。
 - 有設定圖床時，回覆裡的本機圖片會複製到 `OMB_IMAGE_PUBLISH_DIR`，檔名是內容雜湊，再嵌成 `OMB_IMAGE_PUBLIC_BASE/<雜湊>.jpg`。來源必須在 `OMB_DATA_DIR` 裡，且是 10MB 以內的 jpg／png／gif／webp。progressive JPEG 會先轉成 baseline。圖床寫不進去，或沒有設定圖床時，改用 `sendPhoto`。
+- 已經收完的 mermaid 程式碼區塊會在本機畫成 PNG，再嵌回原本那段文字的位置。還沒寫完的區塊維持原始碼，下一則編輯才替換。畫失敗就留下原始碼。第一次使用前執行 `sh mermaid/setup.sh`（`@mermaid-js/mermaid-cli` 與 Chromium 放在 `$OMB_DATA_DIR/mermaid`）。這台機器的 AppArmor 不允許無特權 user namespace，所以 `mermaid/puppeteer.json` 會帶 `--no-sandbox`。
 - thinking／工具期間送 `sendChatAction typing`。
 - 圖片、語音、音訊，以及 PDF／Office／純文字會下載。不滿 12 秒的語音不在這裡轉，音檔交給 OpenMaus。12 秒以上才用本機 Whisper。第一次使用前執行 `sh stt/setup.sh`（權重放在 `$OMB_DATA_DIR/stt`）。執行緒數是 `OMB_STT_CPU_THREADS`，空白則為機器核心數減 2。
 - 位置與即時位置只寫進 `telegram-context/<bot id>.json`。模型用 MCP `telegram` 的 `get_location` 讀。
@@ -65,6 +66,7 @@ stdio，一行一個 JSON。環境變數不要用 `OMB_` 開頭，那是 OpenMau
 - `gateway.js`、`refresh.js`、`telegram-mcp.js`：三個進入點。
 - `src/`：訊息、媒體、圖床、語音的程式與測試。
 - `stt/`：本機 Whisper worker。權重不在這裡。
+- `mermaid/`：本機 Mermaid 的設定與安裝腳本。Chromium 不在這裡。
 - `deploy/`：systemd template，以及選擇性的圖床。
 
 ## 圖床

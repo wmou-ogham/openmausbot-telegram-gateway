@@ -28,6 +28,7 @@ import {
   splitOutgoingImages,
 } from "./src/format.js";
 import { publishLocalImage } from "./src/image-bed.js";
+import { createMermaidRenderer, defaultMermaidBin, embedMermaid } from "./src/mermaid.js";
 import { createTranscriber } from "./src/stt.js";
 import {
   TURN_IMAGE_MAX_COUNT,
@@ -63,6 +64,22 @@ export const TELEGRAM_MAX = RICH_MAX;
 const FILE_ROOTS = (process.env.OMB_FILE_ROOTS || `${DATA_DIR}:${homedir()}`).split(":").filter(Boolean);
 const TELEGRAM_DOWNLOAD_MAX = 20 * 1024 * 1024;
 const CONTEXT_DIR = defaultContextDir(DATA_DIR);
+const renderMermaid = createMermaidRenderer({
+  bin: (process.env.OMB_MERMAID_BIN || "").trim() || defaultMermaidBin(DATA_DIR),
+  cacheDir: join(DATA_DIR, "telegram-mermaid"),
+  configPath: join(HERE, "mermaid", "config.json"),
+  puppeteerConfigPath: join(HERE, "mermaid", "puppeteer.json"),
+  onError: (error) => console.error(`gateway mermaid: ${describeError(error)}`),
+});
+
+async function withMermaid(raw) {
+  try {
+    return await embedMermaid(raw, renderMermaid);
+  } catch (error) {
+    console.error(`gateway mermaid: ${describeError(error)}`);
+    return String(raw ?? "");
+  }
+}
 
 function rememberContext(patch) {
   try {
@@ -449,7 +466,8 @@ async function main() {
   };
   const liveMax = () => (live?.format === "html" || live?.format === "plain" ? HTML_MAX : RICH_MAX);
   const ensurePublished = async (raw) => {
-    const { images } = splitOutgoingImages(raw);
+    const prepared = await withMermaid(raw);
+    const { images } = splitOutgoingImages(prepared);
     if (!live.published) live.published = new Map();
     if (IMAGE_PUBLISH_DIR && IMAGE_PUBLIC_BASE) {
       for (const image of images) {
@@ -466,7 +484,7 @@ async function main() {
         }
       }
     }
-    return renderOutgoingMarkdown(raw, (path) => live.published.get(path) ?? null);
+    return renderOutgoingMarkdown(prepared, (path) => live.published.get(path) ?? null);
   };
   const applyLiveEdit = async (chatId) => {
     if (!live) return;
@@ -516,7 +534,8 @@ async function main() {
   };
   const flushLocalPhotos = async (chatId, raw) => {
     if (!live) return;
-    const { images } = splitOutgoingImages(raw);
+    const prepared = await withMermaid(raw);
+    const { images } = splitOutgoingImages(prepared);
     for (const image of images) {
       if (live.published?.has(image.path) || live.sentPhotoPaths.has(image.path)) continue;
       live.sentPhotoPaths.add(image.path);
